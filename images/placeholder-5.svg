@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="1000" height="750">
+<defs><filter id="t"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .18 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="b"><feGaussianBlur stdDeviation="28"/></filter></defs>
+<rect width="1000" height="750" fill="#dda15e"/>
+<g filter="url(#b)">
+<rect x="520" y="424" width="252" height="291" rx="77" fill="#bc6c25" opacity="0.70" transform="rotate(21 500.0 375.0)"/>
+<rect x="153" y="615" width="417" height="282" rx="138" fill="#dda15e" opacity="0.72" transform="rotate(30 500.0 375.0)"/>
+<rect x="40" y="326" width="212" height="350" rx="76" fill="#283618" opacity="0.63" transform="rotate(12 500.0 375.0)"/>
+<circle cx="217" cy="685" r="157" fill="#283618" opacity="0.86"/>
+<rect x="558" y="576" width="337" height="223" rx="52" fill="#283618" opacity="0.85" transform="rotate(-1 500.0 375.0)"/>
+<rect x="-4" y="307" width="399" height="233" rx="105" fill="#283618" opacity="0.83" transform="rotate(-20 500.0 375.0)"/>
+<rect x="313" y="247" width="365" height="250" rx="65" fill="#dda15e" opacity="0.63" transform="rotate(16 500.0 375.0)"/>
+<circle cx="567" cy="469" r="192" fill="#fefae0" opacity="0.83"/>
+<circle cx="638" cy="302" r="211" fill="#dda15e" opacity="0.93"/>
+</g>
+<path d="M-24 234 C 300 77, 600 169, 1050 223" stroke="#606c38" stroke-width="11" fill="none" stroke-linecap="round" opacity=".85"/>
+<path d="M-17 276 C 300 292, 600 422, 1050 258" stroke="#283618" stroke-width="22" fill="none" stroke-linecap="round" opacity=".85"/>
+<path d="M81 549 C 300 641, 600 602, 1050 566" stroke="#283618" stroke-width="12" fill="none" stroke-linecap="round" opacity=".85"/>
+<path d="M-4 58 C 300 75, 600 -105, 1050 45" stroke="#fefae0" stroke-width="40" fill="none" stroke-linecap="round" opacity=".85"/>
+<rect width="1000" height="750" fill="#fff" filter="url(#t)"/></svg>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ava — Acrylic Paintings</title>
+  <meta name="description" content="Original acrylic paintings by Ava. Browse the gallery, see available works and get in touch about commissions.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23c4572e'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="#top" class="logo">Ava</a>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">Acrylic paintings</p>
+      <h1>Colour, light &amp; <em>texture</em> — painted by hand.</h1>
+      <p class="lede">Original works on canvas. Some are available to buy, and commissions are open.</p>
+    </section>
+
+    <section id="work" class="work">
+      <div class="work-head">
+        <h2>Work</h2>
+        <div class="filters" id="filters" role="toolbar" aria-label="Filter paintings"></div>
+      </div>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="about-photo">
+        <!-- Replace with a photo of Ava, e.g. images/ava.jpg -->
+        <img src="images/placeholder-6.svg" alt="Ava in her studio">
+      </div>
+      <div class="about-text">
+        <h2>About</h2>
+        <p>Hi, I'm Ava — a painter working mostly in acrylics. I love bold colour, layered texture and the way a painting changes as the light in the room moves.</p>
+        <p>Most of my work starts from places and plants I see every day, then drifts somewhere more abstract on the canvas.</p>
+        <p class="muted">Write your own story here: where you paint, what inspires you, exhibitions, anything you like.</p>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <h2>Get in touch</h2>
+      <p>Interested in a painting or a commission? I'd love to hear from you.</p>
+      <div class="contact-links">
+        <a class="button" href="mailto:hello@example.com">hello@example.com</a>
+        <a class="button ghost" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Ava. All artwork and images are the property of the artist.</p>
+  </footer>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Painting details">
+    <button class="lb-close" id="lb-close" aria-label="Close">×</button>
+    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous painting">‹</button>
+    <figure>
+      <img id="lb-img" alt="">
+      <figcaption>
+        <h3 id="lb-title"></h3>
+        <p id="lb-meta" class="muted"></p>
+        <p id="lb-desc"></p>
+        <p id="lb-status"></p>
+      </figcaption>
+    </figure>
+    <button class="lb-nav lb-next" id="lb-next" aria-label="Next painting">›</button>
+  </dialog>
+
+  <script src="js/paintings.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
