@@ -26,9 +26,24 @@ python3 -m http.server 8080
 
 Then open http://localhost:8080.
 
-## Putting it online (free)
+## Live site
 
-- **Netlify Drop**: drag this whole folder onto https://app.netlify.com/drop.
-- **GitHub Pages**: push the folder to a GitHub repo and enable Pages in its settings.
+**https://eemeliparsama.github.io/ava-paintings/** (hosted free on GitHub Pages
+from https://github.com/eemeliparsama/ava-paintings).
 
-Either one can use a custom domain (e.g. `avapaints.com`, about 10–15 €/year).
+Any change saved to the `main` branch goes live automatically in about a minute.
+
+### Updating from the browser (any device, nothing to install)
+1. Open https://github.com/eemeliparsama/ava-paintings
+2. New photo: open the `images` folder → **Add file → Upload files** → **Commit changes**.
+3. Painting details: open `js/paintings.js` → pencil icon → edit → **Commit changes**.
+
+### Updating from this computer
+Edit the files, then:
+
+```bash
+git add -A && git commit -m "Add new paintings" && git push
+```
+
+A custom domain (e.g. `avapaints.com`, about 10–15 €/year) can be added under
+the repo's **Settings → Pages**.
