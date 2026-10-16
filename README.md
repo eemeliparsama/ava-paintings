@@ -8,11 +8,23 @@ A simple static website: no build step, no database. Just HTML, CSS and JavaScri
 2. Save it into `images/` as a JPG, about 2000px on the long side (keeps the site fast).
 3. Open `js/paintings.js`, copy an existing block, paste it at the top of the list and fill in the details.
 
-The filter buttons (Coastlines, Botanicals…) come automatically from the `series` field.
+The All / Available / Sold buttons filter on each painting's `status`.
+Each painting also has Finnish fields (`titleFi`, `descriptionFi`, …); if one is
+left empty the English text is shown instead.
+
+## English / Finnish
+
+The site has an EN / FI switch in the header. All page text (headings, About,
+Contact, button labels) for both languages lives in `js/translations.js`, so edit
+the text there rather than in `index.html`.
+
+Visitors get the language their browser prefers, and the site remembers their
+choice. Links can force a language: `…/ava-paintings/?lang=fi`.
 
 ## Other things to edit
 
-- **Name, About text, email, Instagram**: `index.html`
+- **Page text in both languages**: `js/translations.js`
+- **Email, Instagram**: `index.html`
 - **About photo**: replace `images/placeholder-6.svg` in `index.html` with a real photo
 - **Colours & fonts**: the variables at the top of `css/style.css`
 
