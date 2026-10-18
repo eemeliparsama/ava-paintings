@@ -27,6 +27,7 @@ const TRANSLATIONS = {
     filterAll: "All",
     filterAvailable: "Available",
     filterSold: "Sold",
+    filterCommission: "Commissions",
     filterLabel: "Filter paintings",
 
     statusAvailable: "Available",
@@ -67,6 +68,7 @@ const TRANSLATIONS = {
     filterAll: "Kaikki",
     filterAvailable: "Myynnissä",
     filterSold: "Myydyt",
+    filterCommission: "Tilaustyöt",
     filterLabel: "Suodata teoksia",
 
     statusAvailable: "Myynnissä",

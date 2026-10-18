@@ -13,7 +13,7 @@ const LANGS = Object.keys(TRANSLATIONS);
 let lang = "en";
 let visible = PAINTINGS;
 let current = 0;
-let activeFilter = "all"; // "all" or a painting status: "available" / "sold"
+let activeFilter = "all"; // "all" or a painting status: "available" / "sold" / "commission"
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -37,9 +37,9 @@ function filterPaintings() {
   visible = activeFilter === "all" ? PAINTINGS : PAINTINGS.filter((p) => p.status === activeFilter);
 }
 
-// All / Available / Sold. A status button only appears if some painting has that status.
+// All / Available / Sold / Commissions. A status button only appears if some painting has that status.
 function renderFilters() {
-  const options = [["all", t("filterAll")], ["available", t("filterAvailable")], ["sold", t("filterSold")]]
+  const options = [["all", t("filterAll")], ["available", t("filterAvailable")], ["sold", t("filterSold")], ["commission", t("filterCommission")]]
     .filter(([key]) => key === "all" || PAINTINGS.some((p) => p.status === key));
   if (options.length < 2) { filtersEl.innerHTML = ""; return; }
 

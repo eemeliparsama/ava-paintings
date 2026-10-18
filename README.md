@@ -8,7 +8,7 @@ A simple static website: no build step, no database. Just HTML, CSS and JavaScri
 2. Save it into `images/` as a JPG, about 2000px on the long side (keeps the site fast).
 3. Open `js/paintings.js`, copy an existing block, paste it at the top of the list and fill in the details.
 
-The All / Available / Sold buttons filter on each painting's `status`.
+The All / Available / Sold / Commissions buttons filter on each painting's `status`.
 Each painting also has Finnish fields (`titleFi`, `descriptionFi`, …); if one is
 left empty the English text is shown instead.
 
