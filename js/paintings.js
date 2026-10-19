@@ -18,10 +18,13 @@
     medium    – e.g. "Acrylic on canvas"
     mediumFi  – e.g. "Akryyli kankaalle"
     status    – "available", "sold", "commission", or "" (no label)
-                (the All / Available / Sold / Commissions buttons filter on this)
+                (the All / Available / Sold / Commissioned buttons filter on this)
     price     – optional, e.g. "350 €" (leave "" to hide)
     description   – optional, a sentence or two about the piece
     descriptionFi – the same in Finnish
+    highlight – true to let it appear on the front page. One of the
+                highlighted paintings is picked at random on each visit.
+                Leave it out otherwise.
 
   Any Finnish field left out or "" falls back to the English one.
   The first painting in the list is shown first on the site.
@@ -32,6 +35,7 @@
 const PAINTINGS = [
   {
     image: "images/pink-house.jpg",
+    highlight: true,
     title: "Soft Distance",
     titleFi: "",
     year: 2026,
@@ -58,6 +62,7 @@ const PAINTINGS = [
   },
   {
     image: "images/ballroom.jpg",
+    highlight: true,
     title: "The Lost Bride",
     titleFi: "",
     year: 2026,
@@ -84,6 +89,7 @@ const PAINTINGS = [
   },
   {
     image: "images/red-portrait.jpg",
+    highlight: true,
     title: "The Weight of Red",
     titleFi: "",
     year: 2025,
@@ -97,6 +103,7 @@ const PAINTINGS = [
   },
   {
     image: "images/frog-cocktail.jpg",
+    highlight: true,
     title: "A toast to the absurd",
     titleFi: "",
     year: 2024,
@@ -149,6 +156,7 @@ const PAINTINGS = [
   },
   {
     image: "images/colourful-portrait.jpg",
+    highlight: true,
     title: "Prism Of Sorrow",
     titleFi: "",
     year: "",

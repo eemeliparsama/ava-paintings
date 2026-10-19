@@ -1,0 +1,61 @@
+/* Hallmark · tokens · genre: editorial · theme: custom (the site's own warm paper + terracotta, in OKLCH)
+ * axes: light paper / high-contrast serif / warm accent
+ * Every colour, font, space and easing in style.css comes from here.
+ */
+:root {
+  /* Paper and ink — all neutrals tinted warm toward the terracotta */
+  --color-paper:   oklch(96.6% 0.008 74);   /* page background */
+  --color-paper-2: oklch(93.7% 0.013 75);   /* image placeholder while loading */
+  --color-ink:     oklch(26.9% 0.009 53);   /* text */
+  --color-muted:   oklch(50.3% 0.015 56);   /* secondary text, 5.4:1 on paper */
+  --color-rule:    oklch(89.8% 0.015 71);   /* hairlines, chip borders */
+  --color-mat:     oklch(99% 0.004 80);     /* the light mount around each painting */
+  --shadow-mount:  0 1px 2px oklch(26.9% 0.009 53 / 0.06), 0 6px 18px -10px oklch(26.9% 0.009 53 / 0.25);
+
+  /* One accent. --color-accent is for large type (4.0:1), --color-accent-text for small (5.3:1) */
+  --color-accent:      oklch(58.8% 0.150 40);
+  --color-accent-text: oklch(52.0% 0.137 39);
+  --color-available:   oklch(47.9% 0.087 150); /* "Available" label, 5.7:1 */
+  --color-focus:       var(--color-ink);
+
+  /* Painting view */
+  --lb-chrome: 15rem; /* height taken by the top bar, thumbnail strip and padding */
+
+  /* Type */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body:    "Switzer", system-ui, -apple-system, sans-serif;
+
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-md:  1.125rem;
+  --text-lg:  1.375rem;
+  --text-xl:  clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  --text-display: clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
+  --text-display-l: clamp(3rem, 1rem + 4vw, 5rem); /* desktop headline beside the featured painting */
+  --text-display-s: clamp(2rem, 1.5rem + 1.6vw, 3rem);
+  --mat: clamp(0.625rem, 0.4rem + 0.8vw, 1.125rem); /* mount width */
+
+  /* 4 pt spacing scale */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 7rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --tap: 2.5rem; /* minimum height for small buttons */
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long:  420ms;
+
+  --radius-pill: 999px;
+  --rule: 1px solid var(--color-rule);
+}

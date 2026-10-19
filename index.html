@@ -3,94 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ava — Acrylic Paintings</title>
-  <meta name="description" content="Original acrylic paintings by Ava. Browse the gallery, see available works and get in touch about commissions.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23c4572e'/></svg>">
+  <title>Ava · Acrylic paintings</title>
+  <meta name="description" content="Original acrylic paintings by Ava. See what's available, or ask about a commission.">
+  <link rel="canonical" href="https://eemeliparsama.github.io/ava-paintings/">
+  <!-- Favicon: a serif "A" on terracotta -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23c4572e'/><text x='32' y='47' font-family='Georgia,Times,serif' font-size='44' text-anchor='middle' fill='%23f7f3ee'>A</text></svg>">
+
+  <!-- Link previews (WhatsApp, Messenger, Facebook, iMessage…). images/share.jpg is a 1.91:1 crop of Earthly Echo. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ava · Acrylic paintings">
+  <meta property="og:title" content="Ava · Acrylic paintings">
+  <meta property="og:description" content="Original acrylic paintings by Ava. See what's available, or ask about a commission.">
+  <meta property="og:url" content="https://eemeliparsama.github.io/ava-paintings/">
+  <meta property="og:image" content="https://eemeliparsama.github.io/ava-paintings/images/share.jpg">
+  <meta property="og:image:width" content="1277">
+  <meta property="og:image:height" content="669">
+  <meta property="og:image:alt" content="Detail of Earthly Echo, a green and pink abstract acrylic painting by Ava">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:locale:alternate" content="fi_FI">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body data-page="home">
   <!--
-    The text on this page comes from js/translations.js (English + Finnish).
-    Edit it there — the English below is only a fallback.
+    The header, menu, footer and painting view are added by js/main.js.
+    Page text comes from js/translations.js (English + Finnish); the English
+    below is only a fallback. Email and Instagram live in js/site.js.
   -->
 
-  <header class="site-header">
-    <a href="#top" class="logo">Ava</a>
-    <div class="header-right">
-      <nav>
-        <a href="#work" data-i18n="navWork">Work</a>
-        <a href="#about" data-i18n="navAbout">About</a>
-        <a href="#contact" data-i18n="navContact">Contact</a>
-      </nav>
-      <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria-label="languageLabel">
-        <button type="button" data-lang="en" lang="en" aria-pressed="true">EN</button>
-        <button type="button" data-lang="fi" lang="fi" aria-pressed="false">FI</button>
-      </div>
+  <main class="home" id="top">
+    <div class="home-text">
+      <h1 class="statement" data-i18n-html="heroTitle">Bright colour and thick, <span class="accent">textured</span> paint.</h1>
+      <p class="lede" data-i18n="heroLede">Original acrylic paintings on canvas. Some are for sale, and I take commissions.</p>
+      <!-- One of the paintings marked `highlight: true` in js/paintings.js, picked by main.js -->
+      <p class="home-caption">
+        <span class="badge" id="home-status" hidden></span>
+        <em id="home-title"></em>
+        <span id="home-meta"></span>
+      </p>
+      <a class="button" href="gallery.html" data-page="gallery.html"><span data-i18n="viewPaintings">View the paintings</span></a>
     </div>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <p class="eyebrow" data-i18n="heroEyebrow">Acrylic paintings</p>
-      <h1 data-i18n-html="heroTitle">Colour, light &amp; <em>texture</em> — painted by hand.</h1>
-      <p class="lede" data-i18n="heroLede">Original works on canvas. Some are available to buy, and commissions are open.</p>
-    </section>
-
-    <section id="work" class="work">
-      <div class="work-head">
-        <h2 data-i18n="workTitle">Work</h2>
-        <div class="filters" id="filters" role="toolbar" aria-label="Filter paintings" data-i18n-aria-label="filterLabel"></div>
-      </div>
-      <div class="gallery" id="gallery"></div>
-    </section>
-
-    <section id="about" class="about">
-      <div class="about-photo">
-        <!-- Replace with a photo of Ava, e.g. images/ava.jpg -->
-        <img src="images/placeholder-6.svg" alt="Ava in her studio" data-i18n-alt="aboutPhotoAlt">
-      </div>
-      <div class="about-text">
-        <h2 data-i18n="aboutTitle">About</h2>
-        <p data-i18n="aboutP1">Hi, I'm Ava — a painter working mostly in acrylics. I love bold colour, layered texture and the way a painting changes as the light in the room moves.</p>
-        <p data-i18n="aboutP2">Most of my work starts from places and plants I see every day, then drifts somewhere more abstract on the canvas.</p>
-        <p class="muted" data-i18n="aboutP3">Write your own story here: where you paint, what inspires you, exhibitions, anything you like.</p>
-      </div>
-    </section>
-
-    <section id="contact" class="contact">
-      <h2 data-i18n="contactTitle">Get in touch</h2>
-      <p data-i18n="contactText">Interested in a painting or a commission? I'd love to hear from you.</p>
-      <div class="contact-links">
-        <a class="button" href="mailto:ava.laitila@gmail.com">ava.laitila@gmail.com</a>
-        <a class="button ghost" href="https://www.instagram.com/artbyavalaitila/" target="_blank" rel="noopener">Instagram</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>© <span id="year"></span> Ava. <span data-i18n="footer">All artwork and images are the property of the artist.</span></p>
-  </footer>
-
-  <dialog class="lightbox" id="lightbox" aria-label="Painting details" data-i18n-aria-label="lightboxLabel">
-    <button class="lb-close" id="lb-close" aria-label="Close" data-i18n-aria-label="close">×</button>
-    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous painting" data-i18n-aria-label="previous">‹</button>
-    <figure>
-      <img id="lb-img" alt="">
-      <figcaption>
-        <h3 id="lb-title"></h3>
-        <p id="lb-meta" class="muted"></p>
-        <p id="lb-desc"></p>
-        <p id="lb-status"></p>
-      </figcaption>
+    <figure class="home-painting">
+      <button type="button" class="home-open mount" id="home-open">
+        <img id="home-img" alt="" fetchpriority="high">
+      </button>
     </figure>
-    <button class="lb-nav lb-next" id="lb-next" aria-label="Next painting" data-i18n-aria-label="next">›</button>
-  </dialog>
+  </main>
 
   <script src="js/translations.js"></script>
   <script src="js/paintings.js"></script>
+  <script src="js/site.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

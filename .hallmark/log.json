@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2026-10-19",
+    "macrostructure": "studied-DNA (julia-ulrich-art.com layout)",
+    "theme": "custom (Ava's own palette)",
+    "nav": "name + full-screen menu",
+    "footer": "one line",
+    "enrichment": "none",
+    "brief": "Ava · four pages: statement + one painting home, paintings, about, contact"
+  },
+  {
+    "date": "2026-10-19",
+    "macrostructure": "Split Studio (front page) + Portfolio Grid (gallery page)",
+    "theme": "custom",
+    "theme_axes": "light / high-contrast-serif / warm",
+    "nav": "N9 Edge-aligned minimal + Gallery link",
+    "footer": "Ft6 Letter close",
+    "enrichment": "none",
+    "brief": "Ava · two pages: 5 highlighted paintings alternating sides, separate gallery"
+  },
+  {
+    "date": "2026-10-19",
+    "macrostructure": "Portfolio Grid",
+    "theme": "custom",
+    "theme_axes": "light / high-contrast-serif / warm",
+    "vibe": "warm paper, terracotta, thick paint",
+    "nav": "N9 Edge-aligned minimal",
+    "footer": "Ft6 Letter close",
+    "enrichment": "none",
+    "brief": "Ava · acrylic painting portfolio, EN/FI (redesign from audit)"
+  }
+]

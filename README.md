@@ -8,7 +8,18 @@ A simple static website: no build step, no database. Just HTML, CSS and JavaScri
 2. Save it into `images/` as a JPG, about 2000px on the long side (keeps the site fast).
 3. Open `js/paintings.js`, copy an existing block, paste it at the top of the list and fill in the details.
 
-The All / Available / Sold / Commissions buttons filter on each painting's `status`.
+The All / Available / Sold / Commissioned buttons filter on each painting's `status`.
+The site has four pages, laid out after Julia Ulrich's artist site:
+
+- **Front page** (`index.html`): the headline and one painting beside it. The painting is
+  picked at random from those marked `highlight: true` in `js/paintings.js`, so it changes
+  between visits.
+- **Paintings** (`gallery.html`): every painting, with the filters.
+- **About** (`about.html`) and **Contact** (`contact.html`).
+
+The header, menu, footer and painting view are added to every page by `js/main.js`,
+so they only need changing in one place.
+If a painting has a `price`, it shows next to "Available" (e.g. "Available · 350 €").
 Each painting also has Finnish fields (`titleFi`, `descriptionFi`, …); if one is
 left empty the English text is shown instead.
 
@@ -24,9 +35,14 @@ choice. Links can force a language: `…/ava-paintings/?lang=fi`.
 ## Other things to edit
 
 - **Page text in both languages**: `js/translations.js`
-- **Email, Instagram**: `index.html`
-- **About photo**: replace `images/placeholder-6.svg` in `index.html` with a real photo
-- **Colours & fonts**: the variables at the top of `css/style.css`
+- **Email, Instagram**: `js/site.js`
+- **About picture**: currently a close-up of *Earthly Echo* (`images/green-abstract.jpg`).
+  To use a studio photo instead, change the `<img>` in `about.html` and the
+  `aboutDetailAlt` / `aboutDetailCaption` texts in `js/translations.js`
+- **Colours, fonts & spacing**: `css/tokens.css`
+- **Link to one painting**: open it on the site and copy the address, e.g. `…/ava-paintings/gallery.html#the-lost-bride`.
+  The link comes from the painting's English title, so changing a title changes its link.
+- **Link preview picture** (WhatsApp, Messenger…): `images/share.jpg`, about 1200 × 630 px
 
 When the real paintings are in, delete the `images/placeholder-*.svg` files.
 
