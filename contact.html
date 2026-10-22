@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <!-- Security: the browser only loads scripts, styles, fonts and images from this site itself -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact · Ava</title>
   <meta name="description" content="Ask Ava about a painting or a commission.">
@@ -22,12 +25,10 @@
   <meta property="og:locale" content="en_GB">
   <meta property="og:locale:alternate" content="fi_FI">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">
+  <!-- Fonts are stored on the site itself (fonts/), so no visitor data goes to Google or Fontshare -->
+  <link rel="preload" href="fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -39,14 +40,60 @@
   -->
 
   <main class="contact-page" id="contact">
-    <h1 data-i18n="contactTitle">Get in touch</h1>
-    <p class="lede" data-i18n="contactText">Want one of these paintings, or something made just for you? Send me a message.</p>
-    <div class="contact-links">
-      <a class="contact-email" href="mailto:ava.laitila@gmail.com" data-email data-email-text>ava.laitila@gmail.com</a>
-      <button type="button" class="chip copy-email"><span data-i18n="copyEmail" aria-live="polite">Copy email</span></button>
-      <a class="contact-ig" href="https://www.instagram.com/artbyavalaitila/" data-instagram target="_blank" rel="noopener">Instagram →</a>
+    <div class="contact-side">
+      <h1 data-i18n="contactTitle">Get in touch</h1>
+      <p class="lede" data-i18n="contactText">Want one of these paintings, or something made just for you? Send me a message.</p>
+
+      <!-- No server: "Send message" opens the visitor's email app with the message filled in (main.js) -->
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="field-pair">
+          <div class="field">
+            <label for="cf-first" data-i18n="formFirstName">First name</label>
+            <input id="cf-first" name="first" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="cf-last" data-i18n="formLastName">Last name</label>
+            <input id="cf-last" name="last" type="text" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="field">
+          <label for="cf-email" data-i18n="formEmail">Email</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required data-i18n-placeholder="formEmailHint" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="cf-message" data-i18n="formMessage">Message</label>
+          <textarea id="cf-message" name="message" rows="3" required data-i18n-placeholder="formMessageHint" placeholder="Which painting you're interested in, or what you'd like painted: the size, the colours, where it will hang."></textarea>
+        </div>
+        <fieldset class="field topics">
+          <legend data-i18n="formTopic">What's it about?</legend>
+          <label class="check"><input type="checkbox" name="topic" value="topicForSale"> <span data-i18n="topicForSale">A painting for sale</span></label>
+          <label class="check"><input type="checkbox" name="topic" value="topicCommission"> <span data-i18n="topicCommission">A commission</span></label>
+          <label class="check"><input type="checkbox" name="topic" value="topicOther"> <span data-i18n="topicOther">Something else</span></label>
+        </fieldset>
+        <button type="submit" class="button form-send"><span data-i18n="formSend">Send message</span></button>
+        <p class="form-note" data-i18n="formSendNote">This opens your email app with the message ready to send.</p>
+      </form>
+
+      <p class="form-alt">
+        <a href="mailto:ava.laitila@gmail.com" data-email data-email-text>ava.laitila@gmail.com</a>
+        <span aria-hidden="true">·</span>
+        <button type="button" class="text-button copy-email"><span data-i18n="copy" aria-live="polite">Copy</span></button>
+      </p>
     </div>
-    <p class="sign-off" data-i18n="signOff">Thanks for looking.&nbsp;— Ava</p>
+
+    <!-- A painting as the backdrop for now. Swap the image for a studio photo later if you like;
+         the caption is filled in from js/paintings.js by matching the image path. -->
+    <figure class="contact-panel" data-painting-image="images/colourful-portrait.jpg">
+      <img src="images/colourful-portrait.jpg" alt="">
+      <span class="notch notch-tl" aria-hidden="true"></span>
+      <figcaption class="notch notch-br">
+        <span class="panel-title" id="panel-title"></span>
+        <span class="panel-meta" id="panel-meta"></span>
+      </figcaption>
+      <div class="panel-overlay">
+        <p class="panel-statement"><span data-i18n="panelStatement">Every painting is one of a kind.</span></p>
+      </div>
+    </figure>
   </main>
 
   <script src="js/translations.js"></script>

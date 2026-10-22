@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <!-- Security: the browser only loads scripts, styles, fonts and images from this site itself -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About · Ava</title>
   <meta name="description" content="About Ava, a painter who works mostly in acrylics.">
@@ -22,12 +25,10 @@
   <meta property="og:locale" content="en_GB">
   <meta property="og:locale:alternate" content="fi_FI">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">
+  <!-- Fonts are stored on the site itself (fonts/), so no visitor data goes to Google or Fontshare -->
+  <link rel="preload" href="fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -38,21 +39,56 @@
     below is only a fallback. Email and Instagram live in js/site.js.
   -->
 
+  <!--
+    Scroll animations (main.js, "About page"): the opening picture grows from a card to
+    full width, the small paintings drift at different speeds, the closing card shrinks
+    back in. Hovering a painting name shows that painting by the cursor.
+    With "reduce motion" switched on, everything simply sits still.
+  -->
   <main class="about-page">
-    <figure class="about-detail">
-      <!-- A close-up of one of Ava's paintings. Swap for a studio photo later if you like. -->
-      <div class="crop">
-        <img src="images/green-abstract.jpg" alt="Close-up of the painting Earthly Echo by Ava: layered strokes of green, cream and pink paint." data-i18n-alt="aboutDetailAlt">
+    <!-- 1. Opening picture with the big title -->
+    <section class="about-hero" data-grow>
+      <div class="about-hero-frame">
+        <!-- A close-up of one of Ava's paintings. Swap for a studio photo later if you like. -->
+        <img src="images/green-abstract.jpg" alt="Close-up of the painting Earthly Echo by Ava: layered strokes of green, cream and pink paint." data-i18n-alt="aboutDetailAlt" fetchpriority="high">
+        <h1 class="about-hero-title"><span data-i18n="aboutTitle">About</span></h1>
       </div>
-      <figcaption data-i18n="aboutDetailCaption">Detail · Earthly Echo</figcaption>
-    </figure>
-    <div class="about-text">
-      <h1 data-i18n="aboutTitle">About</h1>
-      <p data-i18n="aboutP1">Hi, I'm Ava. I paint mostly with acrylics. I like strong colours and thick layers of paint, and how a painting looks different in the morning than in the evening.</p>
-      <p data-i18n="aboutP2">A lot of my paintings start from something real, like a place or a face, and get more abstract as I go.</p>
-      <a class="text-link" href="gallery.html" data-page="gallery.html" data-i18n="viewPaintings">View the paintings</a>
-    </div>
+      <p class="about-caption" data-i18n="aboutDetailCaption">Detail · Earthly Echo</p>
+    </section>
+
+    <!-- 2. Hello -->
+    <section class="about-intro">
+      <p class="about-intro-text reveal" data-i18n="aboutP1">Hi, I'm Ava. I paint mostly with acrylics. I like strong colours and thick layers of paint, and how a painting looks different in the morning than in the evening.</p>
+    </section>
+
+    <!-- 3. Dark room: the big statement, paintings drifting past, then the second paragraph -->
+    <section class="about-dark">
+      <p class="about-statement reveal" data-i18n-html="heroTitle">Bright colour and thick, <span class="accent">textured</span> paint.</p>
+      <!-- Filled from js/paintings.js: rows of 5, 3 and 1 paintings -->
+      <div class="drift" id="about-drift"></div>
+      <p class="about-statement about-statement-s reveal" data-i18n="aboutP2">A lot of my paintings start from something real, like a place or a face, and get more abstract as I go.</p>
+    </section>
+
+    <!-- 4. Every painting by name; hover to see it, click to open it -->
+    <section class="about-names">
+      <p class="about-kicker" data-i18n="aboutNamesLabel">The paintings</p>
+      <ul class="name-list" id="about-names"></ul>
+      <!-- Hovering a name slides its painting in from the other side (mouse only, added by main.js) -->
+    </section>
+
+    <!-- 5. Closing card -->
+    <section class="about-end" data-shrink>
+      <div class="about-end-card">
+        <h2 class="about-end-title" data-i18n="aboutEndTitle">Want a painting of your own?</h2>
+        <p class="about-end-text" data-i18n="contactText">Want one of these paintings, or something made just for you? Send me a message.</p>
+        <div class="about-end-actions">
+          <a class="button button-light" href="contact.html" data-page="contact.html"><span data-i18n="contactTitle">Get in touch</span></a>
+          <a class="text-link text-link-light" href="gallery.html" data-page="gallery.html" data-i18n="viewPaintings">View the paintings</a>
+        </div>
+      </div>
+    </section>
   </main>
+
 
   <script src="js/translations.js"></script>
   <script src="js/paintings.js"></script>

@@ -86,7 +86,11 @@ document.querySelectorAll("a[data-email]").forEach((a) => {
   a.href = `mailto:${SITE.email}`;
   if (a.hasAttribute("data-email-text")) a.textContent = SITE.email;
 });
-document.querySelectorAll("a[data-instagram]").forEach((a) => { a.href = SITE.instagram; });
+document.querySelectorAll("a[data-instagram]").forEach((a) => {
+  a.href = SITE.instagram;
+  // "@artbyavalaitila", taken from the end of the Instagram link
+  if (a.hasAttribute("data-instagram-text")) a.textContent = "@" + SITE.instagram.replace(/\/+$/, "").split("/").pop();
+});
 
 const siteMenu = document.getElementById("site-menu");
 document.getElementById("menu-open").addEventListener("click", () => siteMenu.showModal());
@@ -163,6 +167,20 @@ function renderHome() {
   if (!homeImg) return;
   const p = HOME_PAINTING;
   homeImg.src = p.image;
+  // First time only: slide the painting in from the right once its picture has loaded.
+  // On a very slow connection (over 3 s) it just appears in place instead, without sliding.
+  const figure = homeImg.closest(".home-painting.is-waiting");
+  if (figure) {
+    let settled = false;
+    const finish = (how) => {
+      if (settled) return;
+      settled = true;
+      if (how === "slide") figure.classList.replace("is-waiting", "is-sliding");
+      else figure.classList.remove("is-waiting");
+    };
+    homeImg.decode().then(() => finish("slide"), () => finish("appear"));
+    setTimeout(() => finish("appear"), 3000);
+  }
   homeImg.alt = field(p, "title");
   document.getElementById("home-title").textContent = field(p, "title");
   // "Acrylic on canvas, 80 × 100 cm, 2026"
@@ -176,6 +194,188 @@ function renderHome() {
 document.getElementById("home-open")?.addEventListener("click", () => {
   openLightbox(PAINTINGS, PAINTINGS.indexOf(HOME_PAINTING));
 });
+
+// ---- Contact page: the form and the painting beside it ----
+const contactPanel = document.querySelector(".contact-panel");
+const PANEL_PAINTING = contactPanel && PAINTINGS.find((p) => p.image === contactPanel.dataset.paintingImage);
+
+function renderContact() {
+  if (!PANEL_PAINTING) return;
+  document.getElementById("panel-title").textContent = field(PANEL_PAINTING, "title");
+  document.getElementById("panel-meta").textContent = [field(PANEL_PAINTING, "medium"), PANEL_PAINTING.size].filter(Boolean).join(", ");
+}
+
+// The site has no server, so the form writes the email and hands it to the visitor's email app
+const contactForm = document.getElementById("contact-form");
+// Warnings in the site's language (the browser's own would follow the browser's language),
+// and a name or message of only spaces doesn't count as filled in
+const requiredFields = contactForm ? [contactForm.first, contactForm.email, contactForm.message] : [];
+requiredFields.forEach((field) => field.addEventListener("input", () => field.setCustomValidity("")));
+
+function checkContactForm() {
+  requiredFields.forEach((field) => {
+    field.setCustomValidity("");
+    if (!field.value.trim()) field.setCustomValidity(t("formFillIn"));
+    else if (field.validity.typeMismatch) field.setCustomValidity(t("formEmailCheck"));
+  });
+  return contactForm.reportValidity();
+}
+
+contactForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!checkContactForm()) return;
+  const data = new FormData(contactForm);
+  const name = [data.get("first"), data.get("last")].map((v) => String(v).trim()).filter(Boolean).join(" ");
+  const topics = data.getAll("topic").map((key) => t(key));
+  const lines = [
+    String(data.get("message")).trim(),
+    "",
+    "—",
+    `${t("mailName")}: ${name}`,
+    `${t("formEmail")}: ${String(data.get("email")).trim()}`,
+  ];
+  if (topics.length) lines.push(`${t("mailTopic")}: ${topics.join(", ")}`);
+  const subject = topics.length ? `${t("mailSubject")}: ${topics.join(", ")}` : t("mailSubject");
+  location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+});
+
+// ---- About page: drifting paintings, painting names and the scroll animations ----
+const aboutDrift = document.getElementById("about-drift");
+const aboutNames = document.getElementById("about-names");
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const clamp01 = (n) => Math.min(1, Math.max(0, n));
+
+// Rows of 5, 3 and 1 paintings; the single one is the first highlight
+const DRIFT_BIG = PAINTINGS.find((p) => p.highlight) || PAINTINGS[0];
+const DRIFT_REST = PAINTINGS.filter((p) => p !== DRIFT_BIG);
+const DRIFT_ROWS = [DRIFT_REST.slice(0, 5), DRIFT_REST.slice(5, 8), [DRIFT_BIG]];
+const DRIFT_SPEED = [0.08, 0.2, 0.16]; // how far each row lags behind the page as it scrolls (the big one less than the row above, so it never catches up)
+
+// The drifting paintings are only fetched when the dark room is near the screen,
+// so the page opens with just the big picture at the top (much lighter on phones)
+let driftLoaded = false;
+function loadDrift() {
+  driftLoaded = true;
+  aboutDrift.querySelectorAll("img[data-src]").forEach((img) => { img.src = img.dataset.src; img.removeAttribute("data-src"); });
+}
+if (aboutDrift) {
+  const near = new IntersectionObserver((entries) => {
+    if (entries.some((en) => en.isIntersecting)) { loadDrift(); near.disconnect(); }
+  }, { rootMargin: "300px 0px" }); // start fetching when the room is 300px below the screen
+  near.observe(aboutDrift);
+}
+
+function renderAbout() {
+  if (!aboutDrift) return;
+  aboutDrift.innerHTML = DRIFT_ROWS.map((row, r) => `
+    <div class="drift-row drift-row-${row.length}" data-speed="${DRIFT_SPEED[r]}">
+      ${row.map((p) => `
+        <button type="button" class="drift-item" data-index="${PAINTINGS.indexOf(p)}" aria-label="${escapeHtml(field(p, "title"))}">
+          <span class="drift-frame"><img ${driftLoaded ? "src" : "data-src"}="${escapeHtml(p.image)}" alt=""></span>
+        </button>`).join("")}
+    </div>`).join("");
+  aboutNames.innerHTML = PAINTINGS.map((p, i) =>
+    `<li><button type="button" class="name-line" data-index="${i}">${escapeHtml(field(p, "title"))}</button></li>`).join("");
+  updateAbout();
+}
+
+[aboutDrift, aboutNames].forEach((el) => el?.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-index]");
+  if (btn) openLightbox(PAINTINGS, Number(btn.dataset.index));
+}));
+
+// Scroll animations: the opening picture grows to full width (--p 0 → 1),
+// the rows of paintings drift, the closing card shrinks into the page (--p 0 → 1)
+const aboutGrow = document.querySelector("[data-grow]");
+const aboutShrink = document.querySelector("[data-shrink]");
+
+function updateAbout() {
+  if (!aboutGrow) return;
+  const vh = innerHeight;
+  if (reducedMotion.matches) {
+    aboutGrow.style.setProperty("--p", 1);
+    aboutShrink.style.setProperty("--p", 0.5);
+    aboutDrift.querySelectorAll(".drift-row").forEach((row) => { row.style.transform = ""; });
+    aboutDrift.querySelectorAll(".drift-item").forEach((item) => { item.style.transform = ""; item.style.opacity = ""; });
+    return;
+  }
+  aboutGrow.style.setProperty("--p", clamp01(scrollY / (vh * 0.45)).toFixed(3));
+  aboutShrink.style.setProperty("--p", clamp01(1 - aboutShrink.getBoundingClientRect().top / vh).toFixed(3));
+  const box = aboutDrift.getBoundingClientRect();
+  const fromCentre = box.top + box.height / 2 - vh / 2;
+  aboutDrift.querySelectorAll(".drift-row").forEach((row) => {
+    row.style.transform = `translate3d(0, ${(fromCentre * Number(row.dataset.speed)).toFixed(1)}px, 0)`;
+    // Drop: the paintings are let down on their strings as the row comes up the screen,
+    // one a little after another. The first row comes from above the room, out of sight;
+    // the rows below drop a shorter way and fade in, so they never pass over the row above.
+    const rowTop = box.top + row.offsetTop;
+    const items = [...row.children];
+    const first = row === row.parentElement.firstElementChild;
+    // The lower rows are fully down and bright once their top is about 72% of the way down the screen
+    const reach = clamp01((vh * 0.98 - rowTop) / (vh * (first ? 0.5 : 0.26)));
+    const stagger = items.length > 1 ? 0.3 : 0;
+    items.forEach((item, i) => {
+      const own = clamp01((reach - (stagger * i) / (items.length - 1 || 1)) / (1 - stagger));
+      const eased = 1 - (1 - own) ** 3;
+      const lift = first ? row.offsetTop + item.offsetTop + item.offsetHeight + 60 : Math.min(160, vh * 0.18);
+      item.style.transform = eased >= 1 ? "" : `translate3d(0, ${(-(1 - eased) * lift).toFixed(1)}px, 0)`;
+      item.style.opacity = first || eased >= 1 ? "" : (own ** 1.5).toFixed(3);
+    });
+  });
+}
+
+if (aboutGrow) {
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; updateAbout(); });
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  reducedMotion.addEventListener("change", updateAbout);
+
+  // Text fades up as it comes into view
+  document.documentElement.classList.add("has-reveal");
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); }
+  }), { rootMargin: "0px 0px -12% 0px" });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+}
+
+// Hovering a painting name slides that painting in from the other side of the page,
+// level with the name. Each new name gets its own picture: the old one slides back out
+// while the new one comes in, even on the same side (mouse only).
+if (aboutNames && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  const section = aboutNames.closest(".about-names");
+  let shown = null;
+  const slideOut = (el) => {
+    el.classList.remove("is-on");
+    setTimeout(() => el.remove(), 700);
+  };
+  aboutNames.addEventListener("pointerover", (e) => {
+    const btn = e.target.closest(".name-line");
+    if (!btn || shown?.dataset.index === btn.dataset.index) return;
+    const name = btn.getBoundingClientRect();
+    const box = section.getBoundingClientRect();
+    // A name on the left half brings the painting in from the right, and the other way round
+    const fromRight = name.left + name.width / 2 <= box.left + box.width / 2;
+    if (shown) slideOut(shown);
+    const el = document.createElement("div");
+    el.className = `name-slide name-slide-${fromRight ? "right" : "left"}`;
+    el.dataset.index = btn.dataset.index;
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML = `<img src="${escapeHtml(PAINTINGS[btn.dataset.index].image)}" alt="">`;
+    el.style.top = `${name.top - box.top + name.height / 2}px`;
+    section.append(el);
+    void el.offsetHeight; // start from off-screen, then slide
+    el.classList.add("is-on");
+    shown = el;
+  });
+  aboutNames.addEventListener("pointerout", (e) => {
+    if (shown && !e.relatedTarget?.closest?.(".name-line")) { slideOut(shown); shown = null; }
+  });
+}
 
 // ---- Gallery page: every painting, with filters ----
 
@@ -233,7 +433,7 @@ let renderedCols = 0;
 
 function cardHtml(p, i) {
   return `
-    <button type="button" class="card" data-index="${i}" style="animation-delay:${Math.min(i, 8) * 60}ms">
+    <button type="button" class="card" data-index="${i}" style="--i:${Math.min(i, 8)}">
       <div class="frame mount"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(field(p, "title"))}" ${i < 3 ? 'loading="eager"' : 'loading="lazy"'}${i === 0 ? ' fetchpriority="high"' : ""}></div>
       <div class="label">
         <div class="label-top">
@@ -254,10 +454,13 @@ function renderGallery(animate = false) {
   renderedCols = columnCount();
   const cols = Array.from({ length: renderedCols }, () => []);
   visible.forEach((p, i) => cols[i % renderedCols].push(cardHtml(p, i)));
+  // "rise" (page just opened): the slow rise, like the About title; true (filter changed): a quick fade
+  const enterClass = animate === "rise" ? "is-rising" : "is-entering";
   clearTimeout(enterTimer);
-  gallery.classList.toggle("is-entering", animate);
+  gallery.classList.remove("is-rising", "is-entering");
+  if (animate) gallery.classList.add(enterClass);
   gallery.innerHTML = cols.map((c) => `<div class="col">${c.join("")}</div>`).join("");
-  if (animate) enterTimer = setTimeout(() => gallery.classList.remove("is-entering"), 1000);
+  if (animate) enterTimer = setTimeout(() => gallery.classList.remove(enterClass), animate === "rise" ? 2600 : 1000);
 }
 
 window.addEventListener("resize", () => {
@@ -334,7 +537,8 @@ function slug(p) {
 }
 
 function paintingFromHash() {
-  const h = decodeURIComponent(location.hash.slice(1));
+  let h = "";
+  try { h = decodeURIComponent(location.hash.slice(1)); } catch { return undefined; } // a broken link: just show the page
   return h ? PAINTINGS.find((p) => slug(p) === h) : undefined;
 }
 
@@ -488,14 +692,17 @@ function setLanguage(next, remember) {
   document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
   document.querySelectorAll("[data-i18n-alt]").forEach((el) => { el.alt = t(el.dataset.i18nAlt); });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
   document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nAriaLabel)); });
   document.querySelectorAll(".lang-switch button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
   updatePageLinks();
 
   renderHome();
+  renderContact();
+  renderAbout();
   renderFilters();
   renderCount();
-  renderGallery(firstRender);
+  renderGallery(firstRender ? "rise" : false);
   firstRender = false;
   if (lightbox.open) { renderStrip(); show(current); }
 

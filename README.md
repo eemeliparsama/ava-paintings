@@ -15,7 +15,14 @@ The site has four pages, laid out after Julia Ulrich's artist site:
   picked at random from those marked `highlight: true` in `js/paintings.js`, so it changes
   between visits.
 - **Paintings** (`gallery.html`): every painting, with the filters.
-- **About** (`about.html`) and **Contact** (`contact.html`).
+- **About** (`about.html`): a scrolling page. The opening picture grows to full width,
+  the paintings drift past in a dark section, every painting is listed by name (hover to
+  see it, click to open it), and a closing card links to Contact. The paintings and names
+  come from `js/paintings.js` automatically.
+- **Contact** (`contact.html`): a short form and a large painting panel. The site has no
+  server, so "Send message" opens the visitor's own email app with the message filled in,
+  addressed to the email in `js/site.js`. To change the panel picture, change both
+  `data-painting-image` and the `<img>` in `contact.html`.
 
 The header, menu, footer and painting view are added to every page by `js/main.js`,
 so they only need changing in one place.
@@ -75,3 +82,11 @@ git add -A && git commit -m "Add new paintings" && git push
 
 A custom domain (e.g. `avapaints.com`, about 10–15 €/year) can be added under
 the repo's **Settings → Pages**.
+
+## Security
+Each page has a security policy (the `Content-Security-Policy` tag at the top of
+the four `.html` files). It lets the browser load scripts, styles, fonts and images
+only from this site itself. The fonts are stored in `fonts/` (see `fonts/README.md`),
+so visitors' browsers never contact Google or Fontshare. If you later add something
+from another website (a video embed, a map, a visitor counter), add its address to
+that tag in all four pages, or the browser will block it.

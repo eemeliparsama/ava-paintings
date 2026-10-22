@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* Hallmark · tokens · genre: editorial · theme: custom (the site's own warm paper + terracotta, in OKLCH)
  * axes: light paper / high-contrast serif / warm accent
  * Every colour, font, space and easing in style.css comes from here.
@@ -9,6 +10,7 @@
   --color-ink:     oklch(26.9% 0.009 53);   /* text */
   --color-muted:   oklch(50.3% 0.015 56);   /* secondary text, 5.4:1 on paper */
   --color-rule:    oklch(89.8% 0.015 71);   /* hairlines, chip borders */
+  --color-field-line: oklch(76% 0.016 62); /* form field borders */
   --color-mat:     oklch(99% 0.004 80);     /* the light mount around each painting */
   --shadow-mount:  0 1px 2px oklch(26.9% 0.009 53 / 0.06), 0 6px 18px -10px oklch(26.9% 0.009 53 / 0.25);
 
@@ -57,5 +59,6 @@
   --dur-long:  420ms;
 
   --radius-pill: 999px;
+  --radius-field: 0.375rem;
   --rule: 1px solid var(--color-rule);
 }

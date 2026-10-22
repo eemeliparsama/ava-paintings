@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* Hallmark · macrostructure: studied-DNA (source: julia-ulrich-art.com, layout only) · genre: editorial · tone: warm, hand-made · anchor hue: terracotta (40°)
  * theme: custom (site's own palette in OKLCH) · nav: name + full-screen menu · footer: one line · pages: home / paintings / about / contact
  * enrichment: none (the paintings are the imagery) · type: Cormorant Garamond (display) + Switzer (body)
@@ -118,7 +119,7 @@ html:has(.site-menu[open]) { overflow: hidden; }
   background: var(--color-ink); color: var(--color-paper); text-decoration: none; white-space: nowrap;
   transition: background-color var(--dur-short) var(--ease-out);
 }
-.button::after { content: "›"; font-size: 1.5em; line-height: 1; margin-top: -0.1em; }
+.button::after { content: "\203A"; font-size: 1.5em; line-height: 1; margin-top: -0.1em; }
 .button:hover { background: var(--color-accent-text); }
 .button:active { transform: translateY(1px); }
 .text-link {
@@ -128,7 +129,7 @@ html:has(.site-menu[open]) { overflow: hidden; }
   text-decoration-color: var(--color-rule);
   transition: text-decoration-color var(--dur-short) var(--ease-out);
 }
-.text-link::after { content: "→"; margin-left: var(--space-2xs); }
+.text-link::after { content: "\2192"; margin-left: var(--space-2xs); }
 .text-link:hover { text-decoration-color: currentColor; }
 .lede { font-size: var(--text-md); color: var(--color-muted); max-width: 26em; }
 .accent { color: var(--color-accent); }
@@ -145,9 +146,28 @@ html:has(.site-menu[open]) { overflow: hidden; }
 .home-caption { display: flex; flex-direction: column; align-items: center; gap: var(--space-3xs); font-size: var(--text-sm); color: var(--color-muted); margin: 0 0 var(--space-lg); }
 .home-caption em { color: var(--color-ink); }
 .home-painting { margin: 0; min-width: 0; }
+/* On opening, the painting slides in from the right edge of the screen */
+.home-painting.is-waiting { transform: translateX(110vw); }
+.home-painting.is-sliding { animation: slide-from-right 1.4s var(--ease-out) both; }
+@keyframes slide-from-right { from { transform: translateX(110vw); } }
+@media (prefers-reduced-motion: reduce) { .home-painting.is-waiting { transform: none; } }
 .home-open { display: block; cursor: zoom-in; }
 .home-open img { width: auto; max-width: 100%; max-height: min(72vh, 40rem); background: var(--color-paper-2); }
 .home-open:focus-visible { outline-offset: 4px; }
+
+/* Phones and tablets: one column in reading order, so the caption sits right
+   under the painting it describes and the button comes last:
+   headline → intro → painting → caption → button */
+@media (max-width: 899px) {
+  .home { display: flex; flex-direction: column; align-items: center; gap: 0; text-align: center; }
+  .home-text { display: contents; }
+  .statement, .home-text .lede { max-width: 26rem; }
+  .statement { order: 1; }
+  .home-text .lede { order: 2; margin-bottom: var(--space-xl); }
+  .home-painting { order: 3; margin-bottom: var(--space-sm); }
+  .home-caption { order: 4; margin-bottom: var(--space-xl); }
+  .home .button { order: 5; }
+}
 
 @media (min-width: 900px) {
   .home { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2xl); align-items: center; }
@@ -222,49 +242,328 @@ html:has(.site-menu[open]) { overflow: hidden; }
 .label-kicker { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-available); }
 .badge { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; color: var(--color-muted); }
 .badge.available { color: var(--color-available); }
-.badge.sold::before {
+/* A coloured dot before the status: green for available, red for sold */
+.badge.sold::before,
+.badge.available::before {
   content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
   background: var(--color-accent); margin-right: var(--space-2xs); vertical-align: 1px;
 }
+.badge.available::before { background: var(--color-available); }
 
-/* Cards fade in on first load and on a filter change only (main.js sets .is-entering) */
-.gallery.is-entering .card { animation: card-in var(--dur-long) var(--ease-out) both; }
+/* Cards rise slowly into view when the page opens (.is-rising, like the About title)
+   and fade in quickly on a filter change (.is-entering). main.js sets the classes and --i. */
+.gallery.is-entering .card { animation: card-in var(--dur-long) var(--ease-out) calc(var(--i, 0) * 60ms) both; }
 @keyframes card-in { from { opacity: 0; transform: translateY(8px); } }
-
-/* About page: the painting detail on the left, the text on the right */
-.about-page {
-  display: grid; gap: var(--space-xl); align-content: center;
-  padding: var(--space-xl) var(--gutter) var(--space-2xl);
-}
-.about-text { max-width: 34em; font-size: var(--text-md); }
-.about-text h1 { font-size: var(--text-display-s); margin-bottom: var(--space-md); }
-.about-detail { margin: 0; max-width: 32rem; }
-.about-detail .crop { aspect-ratio: 4 / 5; overflow: hidden; background: var(--color-paper-2); }
-.about-detail img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform: scale(1.25); }
-.about-detail figcaption { font-size: var(--text-sm); color: var(--color-muted); margin-top: var(--space-xs); }
-
-@media (min-width: 760px) {
-  .about-page { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-2xl); align-items: center; }
+.gallery.is-rising .card { animation: card-rise 1.2s var(--ease-out) calc(0.1s + var(--i, 0) * 140ms) backwards; }
+@keyframes card-rise {
+  from { transform: translateY(100%); clip-path: inset(-10% -10% 100% -10%); }
+  to { transform: none; clip-path: inset(-10% -10% -10% -10%); }
 }
 
-/* Contact page */
-.contact-page { padding: var(--space-2xl) var(--gutter); max-width: 48rem; align-self: flex-start; }
-.contact-page h1 { font-size: var(--text-display-s); margin-bottom: var(--space-sm); }
-.contact-links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-md); margin: var(--space-xl) 0; }
-.contact-email {
-  font-family: var(--font-display); font-size: var(--text-xl); font-weight: 500; line-height: 1.2;
-  overflow-wrap: anywhere;
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em;
-  text-decoration-color: var(--color-accent);
+/* About page: an opening picture that grows to full width, a dark room with paintings
+   drifting past, every painting by name, and a closing card. main.js sets --p (0 → 1)
+   from the scroll position and moves the rows of paintings. */
+.about-page { display: block; }
+
+/* 1. Opening picture: starts as an inset card, grows to the full width as you scroll */
+.about-hero { padding-bottom: var(--space-md); }
+.about-hero-frame {
+  --inset-x: var(--gutter); --inset-y: var(--space-xs); --q: calc(1 - var(--p, 0));
+  position: relative; overflow: hidden;
+  height: calc(100vh - 7rem); height: calc(100svh - 7rem); min-height: 24rem; max-height: 58rem;
+  background: var(--color-paper-2);
+  clip-path: inset(calc(var(--q) * var(--inset-y)) calc(var(--q) * var(--inset-x)) round calc(var(--q) * 1.25rem));
 }
-.contact-email:hover { color: var(--color-accent-text); }
-.contact-ig {
+.about-hero-frame img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(calc(1 + 0.1 * var(--q))); transform-origin: 50% 70%;
+}
+.about-hero-frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, oklch(18% 0.01 50 / 0.5), transparent 50%);
+}
+.about-hero-title {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; margin: 0; overflow: hidden;
+  padding: 0.08em calc(var(--gutter) + var(--q) * var(--inset-x)) calc(var(--q) * var(--inset-y));
+  font-size: min(23vw, 22rem); font-weight: 500; line-height: 0.9; letter-spacing: -0.02em;
+  color: oklch(98% 0.004 80);
+}
+.about-hero-title span { display: inline-block; animation: title-rise 1.2s var(--ease-out) 0.1s both; }
+@keyframes title-rise { from { transform: translateY(100%); } }
+.about-caption {
+  margin: 0; padding: var(--space-xs) var(--gutter) 0; text-align: center;
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);
+}
+
+/* 2. Hello */
+.about-intro { padding: var(--space-2xl) var(--gutter) var(--space-3xl); }
+.about-intro-text {
+  max-width: 32ch; margin: 0 auto; text-align: center;
+  font-family: var(--font-display); font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.75rem); font-weight: 500; line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* 3. Dark room */
+.about-dark {
+  position: relative; overflow: hidden;
+  padding: var(--space-3xl) var(--gutter);
+  background: var(--color-ink); color: var(--color-paper);
+}
+.about-statement {
+  position: relative; max-width: 17ch; margin: 0 auto; text-align: center;
+  font-family: var(--font-display); font-size: clamp(2.25rem, 0.9rem + 5.4vw, 6rem); font-weight: 500;
+  line-height: 1; text-transform: uppercase; text-wrap: balance;
+}
+.about-statement-s { max-width: 30ch; font-size: clamp(1.5rem, 0.8rem + 2.8vw, 3.5rem); line-height: 1.08; }
+
+/* Clipped at the top only, so the strings start below the heading but the drifting rows can still move */
+.drift {
+  position: relative; display: grid; gap: var(--space-2xl); padding: var(--space-3xl) 0;
+  clip-path: inset(0 -100vw -100vh -100vw);
+}
+.drift-row { display: flex; justify-content: space-between; align-items: flex-start; will-change: transform; }
+.drift-row-3 { justify-content: center; gap: 16%; }
+.drift-row-1 { justify-content: center; }
+/* Each painting floats with the gallery's white edge, a single string running up from it */
+.drift-row-5 { z-index: 3; }
+.drift-row-3 { z-index: 2; }
+.drift-row-1 { z-index: 1; }
+.drift-row { position: relative; }
+.drift-item {
+  --w: clamp(3.25rem, 8vw, 8.5rem);
+  position: relative; display: block; width: var(--w); padding: 0;
+  border: 0; background: none; cursor: zoom-in;
+}
+.drift-row-5 .drift-item:nth-child(even) { margin-top: var(--space-xl); }
+.drift-row-3 .drift-item { --w: clamp(4.5rem, 12vw, 11.5rem); }
+.drift-row-3 .drift-item:nth-child(2) { margin-top: var(--space-2xl); }
+.drift-row-1 .drift-item { --w: clamp(13rem, 36vw, 30rem); }
+/* The string: one thin line straight up, fading out towards the top */
+.drift-item::before {
+  content: ""; position: absolute; bottom: 100%; left: 50%; width: 1px; height: 120vh; margin-left: -0.5px;
+  background: linear-gradient(to top, oklch(98% 0.004 80 / 0.45), oklch(98% 0.004 80 / 0));
+  pointer-events: none;
+}
+/* The white edge, as on the gallery page */
+.drift-frame {
+  display: block; padding: max(3px, calc(var(--w) * 0.05));
+  background: var(--color-mat);
+  box-shadow: 0 10px 24px -10px oklch(0% 0 0 / 0.6);
+}
+.drift-item img {
+  width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; background: oklch(32% 0.01 53);
+  transition: transform var(--dur-long) var(--ease-out);
+}
+.drift-row-1 .drift-item img { aspect-ratio: auto; }
+
+/* Spotlight: hovering one painting lights it up and dims the rest (mouse only) */
+.drift-item::after {
+  content: ""; position: absolute; inset: -45%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, oklch(92% 0.05 80 / 0.22), oklch(92% 0.05 80 / 0.08) 55%, transparent);
+  opacity: 0; transition: opacity 400ms var(--ease-out);
+}
+.drift-frame, .drift-item::before { transition: filter 400ms var(--ease-out), transform 400ms var(--ease-out), opacity 400ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .drift:has(.drift-item:hover) .drift-item:not(:hover) .drift-frame { filter: brightness(0.6) saturate(0.8); }
+  .drift:has(.drift-item:hover) .drift-item:not(:hover)::before { opacity: 0.5; }
+  .drift-item:hover::after { opacity: 1; }
+  .drift-item:hover .drift-frame { transform: scale(1.06); box-shadow: 0 18px 40px -12px oklch(0% 0 0 / 0.75); }
+  .drift-item:hover::before { background: linear-gradient(to top, oklch(98% 0.004 80 / 0.85), oklch(98% 0.004 80 / 0)); }
+}
+.drift-item:focus-visible {
+  outline: 2px solid var(--color-paper); outline-offset: 4px;
+  /* Reached with the keyboard before it has dropped in: bring it straight down so it can be seen */
+  transform: none !important; opacity: 1 !important;
+}
+
+/* 4. Every painting by name, in a staggered column of big capitals */
+.about-names { padding: var(--space-3xl) var(--gutter) var(--space-2xl); }
+.about-kicker {
+  margin: 0 0 var(--space-xl); text-align: center;
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted);
+}
+.name-list { display: grid; margin: 0; padding: 0; list-style: none; }
+.name-list li:nth-child(6n + 2) { margin-left: 26%; }
+.name-list li:nth-child(6n + 3) { justify-self: end; }
+.name-list li:nth-child(6n + 4) { justify-self: center; }
+.name-list li:nth-child(6n + 5) { margin-left: 8%; }
+.name-list li:nth-child(6n + 6) { justify-self: end; margin-right: 12%; }
+.name-list li { justify-self: start; max-width: 100%; }
+.name-line {
+  display: block; padding: 0; border: 0; background: none; cursor: zoom-in; text-align: left;
+  font-family: var(--font-display); font-size: clamp(1.75rem, 0.6rem + 4.8vw, 5.25rem); font-weight: 500;
+  line-height: 1; text-transform: uppercase; color: var(--color-ink);
+  transition: opacity var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+/* The other names fade only while the mouse is on a name, not in the gaps between them */
+.name-list:has(.name-line:hover) .name-line:not(:hover) { opacity: 0.25; }
+.name-line:hover, .name-line:focus-visible { color: var(--color-accent-text); }
+
+/* The painting that slides in from the side opposite the hovered name (mouse only) */
+.about-names { position: relative; overflow-x: clip; }
+.name-list { position: relative; z-index: 1; }
+.name-slide {
+  position: absolute; top: 0; z-index: 2; width: clamp(10rem, 20vw, 19rem); pointer-events: none; /* over the names */
+  opacity: 0; transition: transform 600ms var(--ease-out), opacity 300ms var(--ease-out);
+}
+.name-slide-right { right: var(--gutter); transform: translate(calc(100% + var(--gutter)), -50%); }
+.name-slide-left { left: var(--gutter); transform: translate(calc(-100% - var(--gutter)), -50%); }
+.name-slide.is-on { opacity: 1; transform: translate(0, -50%); }
+.name-slide img {
+  width: 100%; height: auto; padding: var(--mat);
+  background: var(--color-mat); border: 1px solid var(--color-rule); box-shadow: var(--shadow-mount);
+}
+@media (hover: none), (pointer: coarse) { .name-slide { display: none; } }
+
+/* 5. Closing card: full width as it arrives, then shrinks into the page */
+.about-end { padding-bottom: var(--space-lg); }
+.about-end-card {
+  --inset-x: var(--gutter); --inset-y: var(--space-xl);
+  display: grid; place-content: center; justify-items: center; gap: var(--space-md);
+  min-height: 80vh; min-height: 80svh; text-align: center;
+  padding: calc(var(--space-2xl) + var(--inset-y)) calc(var(--gutter) + var(--inset-x));
+  background: var(--color-ink); color: var(--color-paper);
+  clip-path: inset(calc(var(--p, 0) * var(--inset-y)) calc(var(--p, 0) * var(--inset-x)) round calc(var(--p, 0) * 1.25rem));
+}
+.about-end-title {
+  max-width: 17ch; margin: 0;
+  font-size: clamp(2.5rem, 0.8rem + 6vw, 6.5rem); line-height: 1; text-transform: uppercase; text-wrap: balance;
+}
+.about-end-text { max-width: 30em; margin: 0; color: oklch(98% 0.004 80 / 0.75); }
+.about-end-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-sm) var(--space-lg); margin-top: var(--space-xs); }
+.button-light { background: var(--color-paper); color: var(--color-ink); }
+.button-light:hover { background: var(--color-mat); }
+.text-link-light { color: var(--color-paper); text-decoration-color: oklch(98% 0.004 80 / 0.4); }
+
+/* Text fades up as it comes into view (main.js adds .has-reveal and .is-in) */
+.has-reveal .reveal { opacity: 0; transform: translateY(1.5rem); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+.has-reveal .reveal.is-in { opacity: 1; transform: none; }
+
+@media (max-width: 599px) {
+  /* A shorter opening picture on phones */
+  .about-hero-frame { height: min(60vh, 30rem); height: min(60svh, 30rem); min-height: 20rem; }
+  .name-list { row-gap: var(--space-2xs); }
+  .name-list li:nth-child(n) { margin-left: 0; margin-right: 0; }
+  .name-list li:nth-child(even) { justify-self: end; }
+  .name-line { text-align: inherit; }
+  .name-list li:nth-child(even) .name-line { text-align: right; }
+  .drift { gap: var(--space-xl); padding: var(--space-2xl) 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .has-reveal .reveal { opacity: 1; transform: none; }
+}
+
+/* Contact page: a short form on the left, a large painting panel on the right */
+.contact-page {
+  display: grid; gap: var(--space-2xl);
+  padding: var(--space-md) var(--gutter) var(--space-xl);
+}
+.contact-side { width: 100%; max-width: 27rem; justify-self: center; align-self: center; }
+.contact-page h1 { font-size: var(--text-display-s); font-weight: 500; line-height: 1.1; margin: 0 0 var(--space-xs); }
+.contact-page .lede { font-size: var(--text-base); margin: 0 0 var(--space-md); }
+
+/* Form */
+.contact-form { display: grid; gap: var(--space-sm); }
+.field { display: grid; gap: var(--space-3xs); min-width: 0; margin: 0; padding: 0; border: 0; }
+.field-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+.field label, .field legend { font-size: var(--text-sm); font-weight: 500; padding: 0; }
+.field input, .field textarea {
+  width: 100%; min-height: var(--tap); padding: 0.5rem 0.75rem;
+  font: inherit; font-size: var(--text-base); color: var(--color-ink);
+  background: var(--color-mat); border: 1px solid var(--color-field-line); border-radius: var(--radius-field);
+  transition: border-color var(--dur-short) var(--ease-out);
+}
+.field textarea { min-height: 6rem; resize: vertical; line-height: 1.5; }
+.field input::placeholder, .field textarea::placeholder { color: var(--color-muted); opacity: 1; }
+.field input:hover, .field textarea:hover { border-color: var(--color-muted); }
+.field input:focus-visible, .field textarea:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; border-color: var(--color-ink); }
+
+/* Topic checkboxes, two to a row */
+.topics { grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); column-gap: var(--space-sm); row-gap: 0; }
+.topics legend { margin-bottom: var(--space-3xs); }
+.check { display: flex; align-items: center; gap: var(--space-xs); min-height: var(--tap); font-size: var(--text-sm); cursor: pointer; }
+.check input { width: 1.125rem; height: 1.125rem; margin: 0; flex: none; accent-color: var(--color-ink); cursor: pointer; }
+
+.form-send { width: 100%; justify-content: center; margin-top: var(--space-2xs); border: 0; cursor: pointer; border-radius: var(--radius-field); }
+.form-note { margin: calc(var(--space-xs) * -0.5) 0 0; font-size: var(--text-xs); color: var(--color-muted); text-align: center; }
+
+.form-alt {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 var(--space-xs);
+  margin: 0; font-size: var(--text-sm); color: var(--color-muted);
+}
+.contact-form + .form-alt { margin-top: var(--space-md); padding-top: var(--space-xs); border-top: var(--rule); }
+.form-alt a, .text-button {
   display: inline-flex; align-items: center; min-height: var(--tap); white-space: nowrap;
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em;
+  color: var(--color-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em;
   text-decoration-color: var(--color-muted);
 }
-.contact-ig:hover { text-decoration-color: currentColor; }
-.sign-off { font-family: var(--font-display); font-size: var(--text-lg); margin: 0; padding-top: var(--space-lg); border-top: var(--rule); }
+.text-button { padding: 0; border: 0; background: none; font-size: inherit; cursor: pointer; }
+.form-alt a:hover, .text-button:hover { text-decoration-color: currentColor; }
+.text-button.is-copied { color: var(--color-available); }
+
+/* Painting panel: rounded, with a cut-out in two corners like a mount card */
+.contact-panel {
+  --notch-r: 1.5rem;
+  position: relative; margin: 0; min-height: 28rem; aspect-ratio: 4 / 5; container-type: inline-size;
+  border-radius: var(--notch-r); overflow: hidden; background: var(--color-paper-2);
+  /* The notches fill these corners, so no rounding there (it would leave a faint curved edge) */
+  border-bottom-right-radius: 0;
+}
+.contact-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Each notch is a block of page colour with a rounded inner corner,
+   plus two small fillets so the panel edge curves into it */
+.notch { position: absolute; z-index: 1; background: var(--color-paper); }
+.notch::before, .notch::after { content: ""; position: absolute; width: var(--notch-r); height: var(--notch-r); }
+.notch-tl { top: 0; left: 0; width: 22%; height: 4.5rem; border-bottom-right-radius: var(--notch-r); }
+.notch-tl::before { top: 0; left: 100%; background: radial-gradient(circle at 100% 100%, transparent calc(var(--notch-r) - 0.5px), var(--color-paper) var(--notch-r)); }
+.notch-tl::after { top: 100%; left: 0; background: radial-gradient(circle at 100% 100%, transparent calc(var(--notch-r) - 0.5px), var(--color-paper) var(--notch-r)); }
+.notch-br {
+  bottom: 0; right: 0; border-top-left-radius: var(--notch-r);
+  display: grid; gap: 0.125rem; padding: var(--space-sm) var(--space-md) 0 var(--space-md);
+  text-align: right;
+}
+.notch-br::before { bottom: 0; right: 100%; background: radial-gradient(circle at 0 0, transparent calc(var(--notch-r) - 0.5px), var(--color-paper) var(--notch-r)); }
+.notch-br::after { bottom: 100%; right: 0; background: radial-gradient(circle at 0 0, transparent calc(var(--notch-r) - 0.5px), var(--color-paper) var(--notch-r)); }
+.panel-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 500; line-height: 1.15; }
+.panel-meta { font-size: var(--text-xs); color: var(--color-muted); }
+
+/* Words over the painting, on a soft dark fade so they stay readable */
+.panel-overlay {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  /* Bottom padding clears the painting's name in the corner; on a wide panel the words sit beside it instead */
+  padding: var(--space-3xl) var(--space-lg) 5.5rem;
+  background: linear-gradient(to top, oklch(18% 0.01 50 / 0.72), oklch(18% 0.01 50 / 0.35) 55%, transparent);
+  color: oklch(98% 0.004 80);
+}
+@container (min-width: 36rem) {
+  .panel-overlay { padding-bottom: var(--space-lg); padding-right: 13rem; }
+}
+.panel-statement {
+  max-width: 10em; margin: 0;
+  font-family: var(--font-display); font-size: var(--text-display-s); font-weight: 500; line-height: 1.1;
+  text-wrap: balance;
+}
+/* Rises into view on load, like the big "About" title on the About page */
+.panel-statement { overflow: hidden; padding-top: 0.1em; }
+.panel-statement span { display: inline-block; animation: title-rise 1.2s var(--ease-out) 0.25s both; }
+
+@media (max-width: 899px) {
+  .contact-panel { max-height: 80vh; width: 100%; max-width: 34rem; justify-self: center; }
+  .notch-tl { display: none; }
+}
+@media (max-width: 479px) {
+  .topics { grid-template-columns: minmax(0, 1fr); }
+  .panel-overlay { padding-inline: var(--space-md); }
+}
+@media (max-width: 359px) {
+  .field-pair { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 900px) {
+  .contact-page { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-xl); align-items: center; }
+  /* The panel fills the screen height under the header, like the form beside it */
+  .contact-panel { border-top-left-radius: 0; aspect-ratio: auto; height: calc(100vh - 8.5rem); height: calc(100dvh - 8.5rem); min-height: 36rem; max-height: 60rem; }
+}
 
 /* Footer: one quiet line */
 .site-footer {
@@ -335,7 +634,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
   background: var(--color-ink); color: var(--color-paper); text-decoration: none; font-weight: 500; white-space: nowrap;
   transition: background-color var(--dur-short) var(--ease-out);
 }
-.lb-ask::after { content: "→"; }
+.lb-ask::after { content: "\2192"; }
 .lb-ask:hover { background: var(--color-accent-text); }
 .lb-ask:active { transform: translateY(1px); }
 .lb-copy {
